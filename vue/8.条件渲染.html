@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    h3{
+        color:red;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>v-if</h3>
+        <p>1.v-if、v-else-if、v-else</p>
+        <p>v-if只会在值为true时被渲染</p>
+        <div v-if="type === 'A'">
+            A
+            </div>
+            <div v-else-if="type === 'B'">
+            B
+            </div>
+            <div v-else-if="type === 'C'">
+            C
+            </div>
+            <div v-else>
+            Not A/B/C
+        </div>
+        <p>注意：v-else 元素必须紧跟在带 v-if 或者 v-else-if 的元素的后面，否则它将不会被识别。</p>
+        <p>2.在template元素上使用v-if条件渲染分组</p>
+        <p>使用地方：想切换多个元素的时候，把template当作不可见的包裹元素</p>
+        <p>3.用key管理可复用元素</p>
+        <p>描述：切换 loginType 将不会清除用户已经输入的内容，复用placeholder</p>
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">
+        </template>
+        <p>添加一个具有唯一值的 key 属性，不复用input的placeholder</p>
+        <p>给上面的代码的input加一个唯一的id</p>
+        <p>4.v-show</p>
+        <p>注意：v-if与v-show的区别，v-if有更高的切换开销，因为不停的销毁重建；带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 只是简单地切换元素的 CSS 属性 display。</p>
+        <h1 v-show="ok">Hello!</h1>
+        <p>v-for比v-if有更高的优先级</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var vm=new Vue({
+        el="#app",
+        data:{
+
+        }
+    })
+    </script>
+</body>
+</html>

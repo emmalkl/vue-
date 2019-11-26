@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    h3{
+        color:red;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>操作元素的 class 列表和内联样式是数据绑定</h3>
+        <h4>绑定html class： v-bind:class=""</h4>
+        <p>1.对象语法：动态切换class</p>
+        <p>方法一、v-bind:class="{ active: isActive , 'text-danger': hasError}"</p>
+        <div v-bind:class="{ active: isActive , 'text-danger': hasError}"></div>
+        <p>active 这个 class 存在与否将取决于数据属性 isActive的true或false;可以在对象中传入更多属性来动态切换多个 class</p>
+        <p>注意：v-bind:class 指令也可以与普通的 class 属性共存</p>
+         <p>方法二、v-bind:class="classObject" classObject: {
+                active: true,
+                'text-danger': false
+              }</p>
+        <p>方法三、我们也可以在这里绑定一个返回对象的计算属性。这是一个常用且强大的模式：computed监听classObject</p>
+        <div v-bind:class="classObject"></div>
+        <p>2.数组语法：把一个数组传给v-bind:class="[]" ;数组里面是属性name</p>
+        <div v-bind:class="[activeClass, errorClass]"></div>
+        <p>这个只能相当于给元素加了属性的名字，如果想和上述对象语法一样切换条件可以用三元表达式</p>
+        <div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
+        <p>注意：当有多个条件 class 时这样写有些繁琐。所以在数组语法中也可以使用对象语法</p>
+        <p>3.用在组件上</p>
+        <p>当在一个自定义组件上使用 class 属性时，这些 class 将被添加到该组件的根元素上面。这个元素上已经存在的 class 不会被覆盖。</p>
+        <p>举例大概看一下代码：</p>
+        <p>第1步.Vue.component('my-component', {
+                template: '<p class="foo bar">Hi</p>'
+              })</p>
+        <p>第2步.组件上添加class： my-component class="baz boo" /my-component</p>
+        <p>将被渲染成：p class="foo bar baz boo" Hi /p </p>
+        <h4>绑定内联样式：v-bind:style=""</h4>
+        <p>1.对象语法</p>
+        <p>注意：v-bind:style 的对象语法十分直观——看着非常像 CSS，但其实是一个 JavaScript 对象。CSS 属性名可以用驼峰式 (camelCase) 或短横线分隔 (kebab-case，记得用引号括起来) 来命名</p>
+        <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">111</div>
+        <p>或者可以直接绑定到一个对象上;同上结合计算属性</p>
+        <div :style="styleobject">222</div>
+        <p>2.数组语法 :style="[]"</p>
+        <div v-bind:style="[baseStyles, overridingStyles]"></div>
+        <p>3.自动添加前缀</p>
+        <p>当 v-bind:style 使用需要添加浏览器引擎前缀的 CSS 属性时，如 transform，Vue.js 会自动侦测并添加相应的前缀。</p>
+        <p>注意：上句话意思是不用考虑不同内核的浏览器带来的css前缀的不同，vue会自己添加</p>
+        <p>4.多重值</p>
+        <p>:style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"</p>
+        <p>意思是：只会渲染数组中最后一个被浏览器支持的值。</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            isActive:true,
+            hasError: false,
+            error: null,
+            activeClass: 'active',
+            errorClass: 'text-danger',
+            activeColor: 'red',//内联样式
+            fontSize: 30,
+            styleobject:{
+                color: 'green',
+                fontSize: '13px'
+            }
+        },
+        computed: {
+            classObject: function () {
+                return {
+                active: this.isActive && !this.error,
+                'text-danger': this.error && this.error.type === 'fatal'
+                }
+            }
+        }
+    })
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    h3{
+        color: red;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>插值（文本插值|html|特性|js表达式）</h3>
+        <span>1.文本插值Message: {{ msg }}</span>
+        <p style="color:green">通过使用 v-once 指令，你也能执行一次性地插值，当数据改变时，插值处的内容不会更新</p>
+        <span v-once>这个将不会改变: {{ msg }}</span>
+        <p>2.输出dom元素你需要使用v-html</p>
+        <span v-html="html"></span>
+        <p>3.特性v-bind(常用在动态改变某特性)</p>
+        <div v-bind:id="dynamicId"></div>
+        <button v-bind:disabled="isButtonDisabled">Button</button>
+        button v-bind:disabled="isButtonDisabled">Button button
+        <p>如果 isButtonDisabled 的值是 null、undefined 或 false，则 disabled 特性甚至不会被包含在渲染出来的按钮元素中。</p>
+        <p>4.js表达式</p>
+        {{ number + 1 }}
+        {{ ok ? 'YES' : 'NO' }}
+        {{ message.split('').reverse().join('') }}
+        <div v-bind:id="'list-' + id"></div>
+        <h3>指令:以 v- 开头的</h3>
+        <p>1.v-if</p>
+        <p v-if="seen">v-if现在你看到我了</p>
+         <p>2.v-bind用来绑定特性</p>
+         <a v-bind:href="url">这里绑定了href的url为百度</a>
+         <p>在这里 href 是参数，告知 v-bind 指令将该元素的 href 特性与表达式 url 的值绑定。</p>
+        <p>3.v-on监听dom事件</p>
+        <a v-on:click="doSomething" v-bind:href="url">跳转小米商城</a>
+        <p>4.动态参数</p>
+        <p>可以用方括号括起来的 JavaScript 表达式作为一个指令的参数</p>
+        <a v-bind:[attributeName]="url"> ... </a>
+        <p>这里的 attributeName 会被作为一个 JavaScript 表达式进行动态求值，求得的值将会作为最终的参数来使用。例如，如果你的 Vue 实例有一个 data 属性 attributeName，其值为 "href"，那么这个绑定将等价于 v-bind:href。
+            当然事件也类似。</p>
+        <p>所谓动态参数就是方括号包起来的js表达式求出的字符串；这个动态参数有一些约束，不允许空格和引号</p>
+        <p>5.修饰符</p>
+        <p>修饰符 (modifier) 是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。在接下来对 v-on 和 v-for 等功能的探索中，你会看到修饰符的其它例子。</p>
+        <p>例如，.prevent 修饰符告诉 v-on 指令对于触发的事件调用 event.preventDefault()：阻止表单默认提交事件</p>
+        <form v-on:submit.prevent="onSubmit">...</form>
+        
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var vm=new Vue({
+        el:'#app',
+        data:{
+            msg:'文本插值',
+            html:'<span style="color:red">输出真正的html元素</span>',
+            isButtonDisabled:true,
+            dynamicId:0,
+            number:1,
+            ok:0,
+            message:'lilin reverse',
+            id:'3',
+            seen:true,
+            url:'https://www.baidu.com',
+            
+        }, 
+        methods:{
+            doSomething(){
+                this.url='http://www.xiaomi.com';
+            },
+
+        }
+    });
+    </script>
+</body>
+</html>

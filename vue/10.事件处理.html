@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    h3{
+        color:red;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>监听事件</h3>
+        <p>1.v-on基本用法</p>
+        <p>例子：按钮被按了几次--js代码写在v-on指令中</p>
+        <button v-on:click="count+=1">按钮</button>
+        <p>被按了{{count}}次</p>
+        
+        <h3>事件处理方法</h3>
+        <p>v-on 还可以接收一个需要调用的方法名称--js代码写在v-on的方法函数中</p>
+        <button v-on:click="greet">弹出窗口</button>
+
+        <h3>内联处理器中的方法</h3>
+        <p>除了直接绑定到一个方法，也可以在内联 JavaScript 语句中调用方法：</p>
+        <button v-on:click="say('hi')">Say hi</button>
+        <p>有时也需要在内联语句处理器中访问原始的 DOM 事件。可以用特殊变量 $event 把它传入方法</p>
+        <p>写法： v-on:click="warn('Form cannot be submitted yet.', $event)"</p>
+
+        <h3>事件修饰符</h3>
+        <p>在事件处理程序中调用 event.preventDefault() 或 event.stopPropagation() 是非常常见的需求。尽管我们可以在方法中轻松实现这点，但更好的方式是：方法只有纯粹的数据逻辑，而不是去处理 DOM 事件细节。</p>
+        <p>修饰符是由点开头的指令后缀来表示的。</p>
+        <p>1.一些修饰符：</p>
+        <p style="color:green">注意：使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 v-on:click.prevent.self 会阻止所有的点击，而 v-on:click.self.prevent 只会阻止对元素自身的点击。</p>
+        <p>v-on:click.stop="doThis" -- 阻止单机事件继续传播</p>
+        <p>v-on:submit.prevent="onSubmit" -- 提交事件不再重载页面 </p>
+        <p>v-on:click.stop.prevent="doThat" -- 修饰符可以串联</p>
+        <p>v-on:submit.prevent -- 只有修饰符</p>
+        <p>v-on:click.capture="doThis" --添加事件监听器时使用事件捕获模式,即从外往里处理</p>
+        <p>v-on:click.self="doThat" -- 只当在 event.target 是当前元素自身时触发处理函数</p>
+        <p>v-on:click.once="doThis" -- 2.1.4新增点击事件只会触发一次</p>
+        <p>v-on:scroll.passive="onScroll" -- 2.3.0新增滚动事件的默认行为 (即滚动行为) 将会立即触发，不会等待 `onScroll` 完成，这其中包含 `event.preventDefault()` 的情况，优点是此修饰符尤其能够提升移动端的性能</p>
+        <p>注意：不要把 .passive 和 .prevent 一起使用，因为 .prevent 将会被忽略，同时浏览器可能会向你展示一个警告。请记住，.passive 会告诉浏览器你不想阻止事件的默认行为。</p>
+
+        <h3>按键修饰符</h3>
+        <p>Vue 允许为 v-on 在监听键盘事件时添加按键修饰符：</p>
+        <!-- 只有在 `key` 是 `Enter` 时调用 `vm.submit()` -->
+        <input v-on:keyup.enter="submit">
+        <p>1.v-on:keyup.enter="submit" -- 只有在 `key` 是 `Enter` 时调用 `vm.submit()`</p>
+        <p>2.可以直接将 KeyboardEvent.key 暴露的任意有效按键名转换为 kebab-case 来作为修饰符。</p>
+        <p>3.v-on:keyup.page-down="onPageDown" -- 处理函数只会在 $event.key 等于 PageDown 时被调用。</p>
+        <p>4.按键码：keycode了解一下</p>
+        <p>v-on:keyup.13="submit"</p>
+        <p>.enter
+                .tab
+                .delete (捕获“删除”和“退格”键)
+                .esc
+                .space
+                .up
+                .down
+                .left
+                .right</p>
+        <p>还可以通过全局 config.keyCodes 对象自定义按键修饰符别名：Vue.config.keyCodes.f1 = 112</p>
+
+        <h3>系统修饰键？？？？</h3>
+        1.
+        <p>2.1.2新增修饰符来实现仅在按下相应按键时才触发鼠标或键盘事件的监听器：.ctrl
+                .alt
+                .shift
+                .meta</p>
+        <!-- Alt + C -->
+        <input @keyup.alt.67="clear">
+        <!-- Ctrl + Click -->
+        <div @click.ctrl="doSomething">Do something</div>
+        2.
+        <p>2.5.0新增.exact 修饰符允许你控制由精确的系统修饰符组合触发的事件。</p>
+        <!-- 即使 Alt 或 Shift 被一同按下时也会触发 -->
+        <button @click.ctrl="onClick">A</button>
+        <!-- 有且只有 Ctrl 被按下的时候才触发 -->
+        <button @click.ctrl.exact="onCtrlClick">A</button>
+        <!-- 没有任何系统修饰符被按下的时候才触发 -->
+        <button @click.exact="onClick">A</button>
+        3.鼠标修饰符
+        <p>会限制处理函数仅响应特定的鼠标按钮：.left
+                .right
+                .middle</p>
+
+        <h3>为什么在 HTML 中监听事件?</h3>
+        <p>vue使用v-on在html监听事件，所有的 Vue.js 事件处理方法和表达式都严格绑定在当前视图的 
+            ViewModel 上，它不会导致任何维护上的困难</p>
+        <p>v-on优点：</p>
+        <p>1.轻松找到js代码对应的方法</p>
+        <p>2.不需要在js中手动绑定事件，ViewModel 代码可以是非常纯粹的逻辑，和 DOM 完全解耦，更易于测试。</p>
+        <p>3.当一个 ViewModel 被销毁时，所有的事件处理器都会自动被删除。你无须担心如何清理它们。</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+       var vm=new Vue({
+           el:"#app",
+           data:{
+              count:0,//计数
+              name: 'Vue.js'
+           },
+           methods:{
+            greet(event){
+                //`this` 在方法里指向当前 Vue 实例
+                alert('Hello ' + this.name + '!');
+                //`event` 是原生 DOM 事件
+                if (event) {
+                    alert(event.target);//[object HTMLButtonElement]
+                    event.preventDefault();//阻止浏览器默认事件
+                }
+            },
+            say(str){
+                alert(str);
+            }
+           }
+       })
+    </script>
+</body>
+</html>

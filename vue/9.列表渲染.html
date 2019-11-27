@@ -12,17 +12,168 @@
     </style>
 </head>
 <body>
-    <div id="qpp">
+    <div id="app">
+        <h3>v-for</h3>
+        <p>1.循环数组渲染列表:v-for="item in items"</p>
+        <p>v-for还支持第二个参数即index，也可以将in改为of使用</p>
+        <ul>
+            <li v-for="(item,index) in items" :key="index">
+                {{item.message}}-{{index}}
+            </li>
+        </ul>
+        
+        <p>2.用v-for遍历对象：v-for="value in object"</p>
+        <p>支持第二个参数name属性名,支持第三个参数index索引</p>
+        <ul>
+            <li v-for="(value,name,index) in object">
+               {{name}} - {{value}} - {{index}}
+            </li>
+        </ul>
+        <p>注意：在遍历对象时，会按 Object.keys() 的结果遍历，但是不能保证它的结果在不同的 JavaScript 引擎下都一致。</p>
+        
+        <p>3.维护状态</p>
+        <p>针对页面用v-for加载的列表，vue是有“就地更新”原则的，意思是：当数组中顺序变化时不会移动dom元素更新，而是
+            就地更新对应元素。类似 Vue 1.x 的 track-by="$index"。
+        </p>
+        <p>为了给 Vue 一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，你需要为每项提供一个唯一 key 属性：</p>
+        <p>v-for="item in items" v-bind:key="item.id"</p>
+        <p>注意：key属性是 Vue 识别节点的一个通用机制，尽量都带上key，除非dom内容很简单；对于key有自己的api文档：
+            https://cn.vuejs.org/v2/api/#key
+        </p>
+        
+        <p>4.数组更新检测</p>
+        <h5>数组的一些方法：这些被vue包裹的方法也会触发试图更新。</h5>
+        <p>
+            push()、
+            pop()、
+            shift()、
+            unshift()、
+            splice()、
+            sort()、
+            reverse()、
+        </p>
+        <h5>替换数组:不会像上面方法一样改变数组元素，而是返回一个新数组</h5>
+        <p>filter()、concat() 和 slice()</p>
+        <h5>注意事项：由于js限制vue不能检测到以下数组变动--不是响应式的</h5>
+        <p>解决他们不是响应式的问题？让它在响应式系统内触发状态更新</p>
+        <p>（1）当你利用索引直接设置一个数组项时，例如：vm.items[indexOfItem] = newValue</p>
+        <p>解决：/* Vue.set*/  Vue.set(vm.arr, indexOfItem, newValue)</p>
+        <p>/*Array.prototype.splice*/
+            vm.arr.splice(indexOfItem, 1, newValue)</p>
+        <p>你也可以使用 vm.$set 实例方法，该方法是全局方法 Vue.set 的一个别名：</p>
+        <p>vm.$set(vm.arr, indexOfItem, newValue)</p>
+        <p>（2）当你修改数组的长度时，例如：vm.items.length = newLength</p>
+        <p>解决：vm.arr.splice(newLength)</p>
+        <p>注意：我们知道 vm.arr[1]='x';和vm.arr.length=100;不是响应式的，所以我们可以通过以上解决方法让其响应</p>
+        
+        <p>5.对象变更检测注意事项</p>
+        <h5>注意事项:由于js限制Vue 不能检测对象属性的添加或删除，如下例子</h5>
+        <p>var vm = new Vue({
+            data: {
+              a: 1
+            }
+          })
+          // `vm.a` 现在是响应式的
+          
+          vm.b = 2
+          // `vm.b` 不是响应式的</p>
+        <p>解决：Vue.set(object, propertyName, value) 或者 vm.$set(object, propertyName, value)</p>
+        <p style="color:green">有些时候需要给对象赋多个属性，可以用Object.assign() 或 _.extend()</p>
+        <p>用两个对象的属性创建一个新的对象：</p>
+        <p>写法：Object.assign({},object,{age:20,father:'liu'})</p>
+        <p>
+            注意：上述object都是vm的data中的对象，我们给那个对象进行一些操作
+        </p>
 
+        <p>6.显示过滤/排序后的结果</p>
+        <p>有时，我们想要显示一个数组经过过滤或排序后的版本，而不实际改变或重置原始数据。在这种情况下，可以创建一个计算属性，来返回过滤或排序后的数组。</p>
+        <p>例子：过滤偶数</p>
+        <ul>
+            <li v-for="n in evenNumbers">{{n}}</li>
+        </ul>
+        <p style="color: forestgreen">计算属性不适用的时候可以用一个方法</p>
+        <ul>
+            <li v-for="n in even(numbers)">{{n}}</li>
+        </ul>
+
+        <p>7.在v-for里使用值范围</p>
+        <div>
+            <span v-for="n in 10">{{ n }} </span>
+        </div>
+
+        <p>8.在template使用v-for</p>
+        <p>template标签
+            Vue.js提供了template标签，可以将指令作用到这个标签上，对其子元素进行渲染，但最后渲染的结果里不会有它。</p>
+        <ul>
+            <template v-for="(item,index) in items">
+                <li>{{ item.message }}</li>
+                <li class="divider" role="presentation">role="presentation"{{index}}</li>
+            </template>
+        </ul>
+        <p>当现有的HTML标签不能充分表达语义性的时候，就可以借助role来说明，这样可增强组件的可访问性、可用性和可交互性。</p>
+        
+        <p>9.v-for v-if 一同使用</p>
+        <p>当它们处于同一节点，v-for 的优先级比 v-if 更高，这意味着 v-if 将分别重复运行于每个 v-for 循环中。</p>
+        <p>这就会使代码渲染更高效,只会渲染isComplete为false的dom</p>
+        <li v-for="todo in todos" v-if="!todo.isComplete">
+           {{ todo }}
+        </li>
+        <p>如果你的目的是有条件地跳过循环的执行，那么可以将 v-if 置于外层元素 (或 <template>)上</p>
+ 
+        <p>10.在组件上使用v-for</p>
+        <h5>当在组件上使用 v-for 时，key 现在是必须的。可参考2</h5>
+        <p>见例子1--todo列表</p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
     var vm=new Vue({
-        el="#app",
+        el:"#app",
         data:{
+            items: [
+                { message: 'Foo' },
+                { message: 'Bar' }
+            ],
+            object: {
+                title: 'How to do lists in Vue',
+                author: 'Jane Doe',
+                publishedAt: '2016-04-10'
+            },
+            //举个注意事项的例子
+            arr:['a','b','c'],
+            numbers:[1,2,3,4,5,6],
+            todos:[{
+                thing:'lisiten music',
+                isComplete:true,
+            },{
+                thing:'code review',
+                isComplete:false,
+            },{
+                thing:'learn vue',
+                isComplete:false,
+            }
+            ],
 
+        },
+        //计算属性返回过滤或排序后的数组
+        computed:{
+            evenNumbers:function(){
+                return this.numbers.filter(function(a){
+                   return a%2===0;  
+                })
+            }
+        },
+        //计算属性不适用的时候用方法来代替
+        methods:{
+            even(numbers){
+                return numbers.filter(function(a){
+                   return a%2===0;  
+                })
+            }
         }
     })
+    //以下不是响应式的
+    vm.arr[1]='x';
+    vm.arr.length=100;
     </script>
 </body>
 </html>

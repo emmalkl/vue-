@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    h3{
+        color:red;
+    }
+    h5{
+        color:dodgerblue;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>基本示例</h3>
+        <p>定义一个名为 button-counter 的新组件</p>
+
+        <h3>组件的复用</h3>
+        <h5>data 必须是一个函数</h5>
+
+        <h3>组件的组织</h3>
+
+        <h3>通过 Prop 向子组件传递数据</h3>
+
+        <h3>单个根元素</h3>
+
+        <h3>监听子组件事件</h3>
+        <h5>使用事件抛出一个值</h5>
+        <h5>在组件上使用 v-model</h5>
+
+        <h3>通过插槽分发内容</h3>
+
+        <h3>动态组件</h3>
+
+        <h3>解析 DOM 模板时的注意事项</h3>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var vm=new Vue({
+        el:"#app",
+        data:{
+
+        }
+    })
+    Vue.component('button-counter',{
+        data: function () {
+            return {
+            count: 0
+            }
+        },
+        template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+    })
+    </script>
+</body>
+</html>

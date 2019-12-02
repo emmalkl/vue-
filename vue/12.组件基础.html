@@ -18,35 +18,93 @@
     <div id="app">
         <h3>基本示例</h3>
         <p>定义一个名为 button-counter 的新组件</p>
+        <p>因为组件是可复用的 Vue 实例，所以它们与 new Vue 接收相同的选项，例如 data、computed、watch、methods 以及生命周期钩子等。仅有的例外是像 el 这样根实例特有的选项。</p>
+        <p style="color:blueviolet">注意:Vue.component必需写在new Vue上面才可以，否则报组件注册错误</p>
+        <button-counter></button-counter>
 
         <h3>组件的复用</h3>
-        <h5>data 必须是一个函数</h5>
+        <p>你可以将组件进行任意次数的复用--每用一次组件，就会有一个它的新实例被创建。</p>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <h5>一个组件的data 必须是一个函数</h5>
+        <p>不然的话，点击一个按钮就会影响其它按钮的点击次数，因为是同一个data</p>
 
         <h3>组件的组织</h3>
-
+        <p>一个应用会以一棵嵌套的组件树的形式来组织</p>
+        <p>注册组件有两种类型：</p>
+        <p>全局注册--Vue.component，它可以用在任何位置</p>
+        <p>局部注册</p>
+       
         <h3>通过 Prop 向子组件传递数据</h3>
+        <p>参考2.组件化应用构建</p>
 
         <h3>单个根元素</h3>
+        <p>意思是：注册的组件template里面因为只能有一个根元素，所以比如要很多标签时可以用父元素包裹起来</p>
+        <p>例如：blog-post博客发送的文章中有正文和标题，后续或许还加作者/创作时间等等其它标签，我们需要一一在组件上绑定此属性</p>
+        
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <!-- <p>控制所有文字的大小:style</p> -->
+            <blog-post v-for="post in posts" 
+            v-bind:key="post.id" 
+            v-bind:post=post
+            v-bind:title="post.title" 
+            v-bind:content="post.content"
+            v-on:enlarge-text="postFontSize += 0.1">  
+            </blog-post>
+        </div>
+        <p>但是如此为每个相关的信息定义一个 prop 会变得很麻烦，所以我们可以更新一下template中的标签</p>
+        
+        
 
         <h3>监听子组件事件</h3>
+        <p>父组件对子组件进行一些操作</p>
+        <p>现在我们在每篇博文正文之前添加一个按钮来放大字号：blog-post的content字号通过按钮放大</p>
+        <p style="font-weight:300">1.我们需要在blog-post注册组件的template中添加按钮</p>
+        <p style="font-weight:300">2.级组件可以像处理 native DOM 事件一样通过 v-on 监听子组件实例的任意事件： 
+            v-on:enlarge-text="postFontSize += 0.1"方法字体的方法写到标签上</p>
+        <p style="font-weight:300">3.子组件可以通过调用内建的 $emit 方法 并传入事件名称来触发一个事件：
+            v-on:click="$emit('enlarge-text')"此方法加到template上button事件上
+        </p>
+        <br>
         <h5>使用事件抛出一个值</h5>
+        <p>$emit有第二个参数：它的作用可以在button上设置固定的放大倍数0.1即：
+            v-on:click="$emit('enlarge-text',0.1)"，然后将0.1传给父组件监听的事件，可以通过 $event 访问到被抛出的这个值
+            v-on:enlarge-text="postFontSize += $event"函数</p>
+        <p>或者父组件监听的事件用methods的方法写，函数里通过形参接受子组件抛出的值</p>
         <h5>在组件上使用 v-model</h5>
+        <p>input v-model="searchText"</p>
+        <p>等价于--动态绑定了一个value和一个input事件</p>
+        <p>input
+                v-bind:value="searchText"
+                v-on:input="searchText = $event.target.value"</p>
+        <p>用在组件上</p>
+        <custom-input
+        v-bind:value="searchText"
+        v-on:input="searchText = $event"
+        ></custom-input>
+        <br>
+        <custom-input v-model="searchText"></custom-input>
+
 
         <h3>通过插槽分发内容</h3>
+        <p>需要向一个组件传递内容--slot</p>
+        <p>使用方法，在需要的地方加上slot标签，例如注册组件的template内</p>
 
         <h3>动态组件</h3>
+        <p>应用不同组件间的动态切换：v-bind:is="currentTabComponent"通过一些布尔值切换不同的组件</p>
 
         <h3>解析 DOM 模板时的注意事项</h3>
+         <p>解析dom模板有一个注意事项:</p>
+         <p>ul li必须搭配使用，但是如果li是个组件那么就会出现ul标签下有一个其它标签名命名的标签，会有渲染错误</p>
+         <p>他的解决eg：table标签下tr is="blog-post-row"带上它就可以了</p>
+         <p>但是我们从以下来源使用模板的话，这条限制是不存在的</p>
+         <p>字符串：template: '...'；单文件组件 (.vue)；script type="text/x-template"</p>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-    var vm=new Vue({
-        el:"#app",
-        data:{
-
-        }
-    })
+    //定义一个名为 button-counter 的新组件---全局注册
     Vue.component('button-counter',{
         data: function () {
             return {
@@ -55,6 +113,41 @@
         },
         template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
     })
+    //单个根元素，引用父组件中的数据
+    Vue.component('blog-post',{
+        props:['post','title','content'],
+        template:`<div class="blog-post">
+            <h3>{{ title }}</h3>
+            <!--添加事件的按钮-->
+            <button v-on:click="$emit('enlarge-text')">
+                Enlarge text
+            </button>
+            <div v-html="content"></div>
+        </div>`
+    });
+    //组件上的v-model等价于
+    Vue.component('custom-input', {
+        props: ['value'],
+        template: `
+            <input
+            v-bind:value="value"
+            v-on:input="$emit('input', $event.target.value)"
+            >
+        `
+    })
+    //
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            posts: [
+                { id: 1, title: 'My journey with Vue' ,content:'45s3da54farsd'},
+                { id: 2, title: 'Blogging with Vue'  ,content:'45s3da54farsd'},
+                { id: 3, title: 'Why Vue is so fun'  ,content:'45s3da54farsd'}
+            ],
+            postFontSize:1,//字体的初始大小
+        }
+    })
+    
     </script>
 </body>
 </html>
